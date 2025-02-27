@@ -1,8 +1,9 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as request from 'supertest';
+import request from 'supertest';
 import { App } from 'supertest/types';
+import { describe } from 'vitest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
@@ -19,6 +20,7 @@ describe('AppController (e2e)', () => {
       .setTitle('Hello example')
       .setDescription('The Hello API description')
       .setVersion('1.0')
+      .setOpenAPIVersion('3.1.0')
       .addTag('hello')
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
@@ -33,15 +35,14 @@ describe('AppController (e2e)', () => {
       .expect('Hello world!');
   });
 
-  it.only('/ (GET) access swagger api and verify that there are no circular dependencies', async () => {
-    const response = await request(app.getHttpServer())
-      // .get('/api/swagger-ui-init.js')
-      .get('/api')
-      .expect(HttpStatus.OK)
-      .expect('Content-Type', /html/);
-    console.log(response);
-    // .expect(200);
-    // console.log(response.text);
-    // expect(response.text).toContain('<title>Swagger UI</title>');
+  it('/ (GET) access swagger api and verify that there are no circular dependencies', async () => {
+    const response = await request(app.getHttpServer()).get(
+      '/api/swagger-ui-init.js',
+    );
+    expect(response.text).toContain('The Hello API description');
+    expect(response.headers['content-type']).toContain(
+      'application/javascript',
+    );
+    expect(response.status).toBe(HttpStatus.OK);
   });
 });

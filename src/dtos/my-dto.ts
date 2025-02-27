@@ -8,8 +8,8 @@ export const MyEnum = {
 export type MyEnum = (typeof MyEnum)[keyof typeof MyEnum];
 
 export class MyDto {
-  @ApiPropertyOptional()
-  // @ApiPropertyOptional({ enum: MyEnum })
+  // @ApiPropertyOptional()
+  @ApiPropertyOptional({ enum: MyEnum })
   @IsOptional()
   someEnum?: MyEnum;
 }
