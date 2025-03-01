@@ -3,7 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import request from 'supertest';
 import { App } from 'supertest/types';
-import { describe } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
@@ -15,7 +15,6 @@ describe('AppController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-
     const config = new DocumentBuilder()
       .setTitle('Hello example')
       .setDescription('The Hello API description')
@@ -25,6 +24,7 @@ describe('AppController (e2e)', () => {
       .build();
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, documentFactory);
+
     await app.init();
   });
 
